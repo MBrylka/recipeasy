@@ -1,2 +1,2 @@
 # recipeasy
-Recipe manager
+Recipe manager built using Flask and vue
