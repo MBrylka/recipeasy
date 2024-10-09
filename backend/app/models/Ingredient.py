@@ -1,5 +1,4 @@
-import sqlalchemy
-from app import db
+from ..extensions import db
 
 
 class Ingredient(db.Model):

@@ -1,9 +1,7 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from app.routes.ui import ui_blueprint
-from app.routes.api import api_blueprint
-
-db = SQLAlchemy()
+from .extensions import db, migrate
+from .routes.ui import ui_blueprint
+from .routes.api import api_blueprint
 
 
 def create_app(config_class):
@@ -11,6 +9,7 @@ def create_app(config_class):
     app.config.from_object(config_class)
 
     db.init_app(app)
+    migrate.init_app(app, db)
 
     app.register_blueprint(ui_blueprint, url_prefix=None)
     app.register_blueprint(api_blueprint, url_prefix="/api")

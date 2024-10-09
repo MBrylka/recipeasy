@@ -1,11 +1,8 @@
-import sqlalchemy
-from db.ext.declarative import declarative_base
-from Ingredient import Ingredient
-
-Base = declarative_base()
+from ..extensions import db
+from .Ingredient import Ingredient
 
 
-class Recipe(Base):
+class Recipe(db.Model):
     __tablename__ = "recipes"
     id = db.Column(db.UUID, primary_key=True)
     name = db.Column(db.String(length=100))

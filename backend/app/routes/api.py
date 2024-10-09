@@ -1,6 +1,6 @@
 from flask import Blueprint
-from app.routes.recipes import recipes_blueprint
-from app.routes.ingredients import ingredients_blueprint
+from .recipes import recipes_blueprint
+from .ingredients import ingredients_blueprint
 
 api_blueprint = Blueprint("api", __name__)
 
