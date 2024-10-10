@@ -2,6 +2,7 @@ from flask import Flask
 from .extensions import db, migrate
 from .routes.ui import ui_blueprint
 from .routes.api import api_blueprint
+from .models import Ingredient, Recipe, RecipeIngredient
 
 
 def create_app(config_class):

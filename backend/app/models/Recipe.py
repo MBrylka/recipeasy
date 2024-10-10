@@ -1,10 +1,11 @@
+import uuid
 from ..extensions import db
-from .Ingredient import Ingredient
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Recipe(db.Model):
+class Recipe(db.Model, SerializerMixin):
     __tablename__ = "recipes"
-    id = db.Column(db.UUID, primary_key=True)
+    id = db.Column(db.UUID, primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(length=100))
     description = db.Column(db.String(255))
-    ingredients = db.Column(db.ARRAY(Ingredient))
+    ingredients = db.relationship("RecipeIngredient", back_populates="recipe")
