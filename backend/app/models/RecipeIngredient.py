@@ -1,10 +1,9 @@
 import uuid
 from ..extensions import db
-from dataclasses import dataclass
+from sqlalchemy_serializer import SerializerMixin
 
 
-@dataclass
-class RecipeIngredient(db.Model):
+class RecipeIngredient(db.Model, SerializerMixin):
     __tablename__ = "recipe_ingredients"
 
     recipe_id = db.Column(db.UUID, db.ForeignKey("recipes.id"), primary_key=True)

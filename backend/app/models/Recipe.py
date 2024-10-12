@@ -9,3 +9,7 @@ class Recipe(db.Model, SerializerMixin):
     name = db.Column(db.String(length=100))
     description = db.Column(db.String(255))
     ingredients = db.relationship("RecipeIngredient", back_populates="recipe")
+
+    def __init__(self, name, description) -> None:
+        self.name = name
+        self.description = description
