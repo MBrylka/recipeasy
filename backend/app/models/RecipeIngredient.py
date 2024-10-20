@@ -6,14 +6,12 @@ from sqlalchemy_serializer import SerializerMixin
 class RecipeIngredient(db.Model, SerializerMixin):
     __tablename__ = "recipe_ingredients"
 
-    recipe_id = db.Column(db.UUID, db.ForeignKey("recipes.id"), primary_key=True)
-    ingredient_id = db.Column(
-        db.UUID, db.ForeignKey("ingredients.id"), primary_key=True
-    )
-    quantity = db.Column(
-        db.Float, nullable=False
-    )  # Quantity for that ingredient in the recipe
+    id = db.Column(db.UUID, primary_key=True, default=uuid.uuid4)
+    recipe_id = db.Column(db.UUID, db.ForeignKey("recipes.id"))
+    ingredient_id = db.Column(db.UUID, db.ForeignKey("ingredients.id"))
+    quantity = db.Column(db.Float, nullable=False)
 
-    # Relationships
-    recipe = db.relationship("Recipe", back_populates="ingredients")
-    ingredient = db.relationship("Ingredient", back_populates="recipes")
+    def __init__(self, recipe_id, ingredient_id, quantity) -> None:
+        self.recipe_id = uuid.UUID(recipe_id)
+        self.ingredient_id = uuid.UUID(ingredient_id)
+        self.quantity = quantity
