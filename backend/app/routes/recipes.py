@@ -1,7 +1,7 @@
 import uuid
 from flask import Blueprint, jsonify
 from flask import request
-from ..models import Recipe, RecipeIngredient
+from ..models import Recipe, RecipeIngredient, Ingredient
 from ..extensions import db
 
 recipes_blueprint = Blueprint("recipes", __name__)
@@ -38,12 +38,19 @@ def get_recipe_ingredients_by_recipe_id(recipe_id):
     if not recipe:
         return {"error": f"Recipe with ID: {recipe_id} not found"}, 404
 
-    recipe_ingredients = Recipe.query.filter_by(recipe_id=recipe_uuid).all()
-    return {
-        "ingredients": [
-            recipe_ingredient.to_dict() for recipe_ingredient in recipe_ingredients
-        ]
-    }, 200
+    ingredients_list = []
+    recipe_ingredients = RecipeIngredient.query.filter_by(recipe_id=recipe_uuid).all()
+    for recipe_ingredient in recipe_ingredients:
+        ingredient = Ingredient.query.filter_by(
+            id=recipe_ingredient.ingredient_id
+        ).first()
+        ingredients_list.append(
+            {
+                "recipeIngredient": recipe_ingredient.to_dict(),
+                "ingredient": ingredient.to_dict(),
+            }
+        )
+    return {"ingredientsList": ingredients_list}, 200
 
 
 @recipes_blueprint.route("/<string:recipe_id>", methods=["PATCH"])
