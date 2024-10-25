@@ -1,4 +1,9 @@
+from sqlite3 import DatabaseError
 import uuid
+
+
+from ..exceptions import EmptyBodyError, InvalidUUIDError, JsonParseError, NotFoundError
+from ..services.ingredients_service import create_ingredient, delete_ingredient_by_id, get_all_ingredients, get_ingredient_by_id, update_ingredient_by_id
 from flask import Blueprint, jsonify
 from flask import request
 from ..models import Ingredient
@@ -8,78 +13,54 @@ ingredients_blueprint = Blueprint("ingredients", __name__)
 
 
 @ingredients_blueprint.route("/")
-def get_all_ingredients():
-    ingredients = Ingredient.query.all()
-    return {"ingredients": [ingredient.to_dict() for ingredient in ingredients]}
+def get_ingredients():
+    ingredients = get_all_ingredients()
+    return {"ingredients": ingredients}, 200
 
 
 @ingredients_blueprint.route("/<string:ingredient_id>")
-def get_ingredient_by_id(ingredient_id):
+def select_ingredient(ingredient_id):
     try:
-        ingredient_uuid = uuid.UUID(ingredient_id)
-    except ValueError:
-        return {"error": "ID must be in uuid format"}, 400
-
-    ingredient = Ingredient.query.filter_by(id=ingredient_uuid).first()
-
-    if not ingredient:
-        return {"error": f"Ingredient with ID: {ingredient_id} not found"}, 404
-
-    return ingredient.to_dict(), 200
+        ingredient = get_ingredient_by_id(ingredient_id)
+        return ingredient, 200
+    except InvalidUUIDError as err:
+        return {"error": str(err)}, 400
+    except NotFoundError as err:
+        return {"error": str(err)}, 404
 
 
 @ingredients_blueprint.route("/<string:ingredient_id>", methods=["PATCH"])
-def update_ingredient_by_id(ingredient_id):
+def update_ingredient(ingredient_id):
     try:
-        ingredient_uuid = uuid.UUID(ingredient_id)
-    except ValueError:
-        return {"error": "ID must be in uuid format"}, 400
-
-    ingredient = Ingredient.query.filter_by(id=ingredient_uuid).first()
-    if not ingredient:
-        return {"error": f"Ingredient with ID: {ingredient_id} not found"}, 404
-
-    data = request.get_json()
-
-    for key, value in data.items():
-        if hasattr(ingredient, key):
-            setattr(ingredient, key, value)
-
-    db.session.commit()
-    return jsonify({"success": True, "ingredient": ingredient.to_dict()}), 200
+        data = request.get_json()
+        result = update_ingredient_by_id(ingredient_id, data)
+        return result, 200
+    except InvalidUUIDError as err:
+        return {"error": str(err)}, 400
+    except NotFoundError as err:
+        return {"error": str(err)}, 404
 
 
 @ingredients_blueprint.route("/<string:ingredient_id>", methods=["DELETE"])
-def delete_ingredient_by_id(ingredient_id):
+def remove_ingredient(ingredient_id):
     try:
-        ingredient_uuid = uuid.UUID(ingredient_id)
-    except ValueError:
-        return {"error": "ID must be in uuid format"}, 400
-
-    deleted = Ingredient.query.filter_by(id=ingredient_uuid).delete()
-    db.session.commit()
-    if deleted > 0:
-        return {"success": True}, "200"
-    else:
-        return {"error": f"Ingredient with ID: {ingredient_id} not found"}, 404
+        result = delete_ingredient_by_id(ingredient_id)
+        return result, 200
+    except InvalidUUIDError as err:
+        return {"error": str(err)}, 400
+    except NotFoundError as err:
+        return {"error": str(err)}, 404
 
 
 @ingredients_blueprint.route("/", methods=["POST"])
-def create_ingredient():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "no json data provided"}), 400
-
+def add_ingredient():
     try:
-        name = data.get("name")
-    except:
-        return jsonify({"error": "Exception when deserializing data"}), 400
-
-    try:
-        new_ingredient = Ingredient(name)
-        db.session.add(new_ingredient)
-        db.session.commit()
-    except:
-        return jsonify({"err": "Exception when creating object in database"}), 400
-
-    return jsonify(new_ingredient.to_dict()), 204
+        data = request.get_json()
+        result = create_ingredient(data)
+        return result, 200
+    except EmptyBodyError as err:
+        return {"error": str(err)}, 400
+    except JsonParseError as err:
+        return {"error": str(err)}, 400
+    except DatabaseError as err:
+        return {"error": str(err)}, 500

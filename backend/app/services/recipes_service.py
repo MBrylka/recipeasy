@@ -4,8 +4,9 @@ from ..exceptions import DatabaseError, EmptyBodyError, InvalidUUIDError, JsonPa
 from ..models import Recipe, RecipeIngredient, Ingredient
 from ..extensions import db
 
-def get_recipes():
-    return Recipe.query.all()
+def get_all_recipes():
+    recipes = Recipe.query.all()
+    return [recipe.to_dict() for recipe in recipes]
 
 
 def get_recipe_by_id(recipe_id):
@@ -13,11 +14,9 @@ def get_recipe_by_id(recipe_id):
         recipe_uuid = uuid.UUID(recipe_id)
     except ValueError:
         raise InvalidUUIDError("ID must be in uuid format")
-
     recipe = Recipe.query.filter_by(id=recipe_uuid).first()
     if not recipe:
         raise NotFoundError(f"Recipe with ID: {recipe_id} not found")
-
     return recipe.to_dict()
 
 
@@ -26,11 +25,9 @@ def get_recipe_ingredients_by_recipe_id(recipe_id):
         recipe_uuid = uuid.UUID(recipe_id)
     except ValueError:
         raise InvalidUUIDError("ID must be in uuid format")
-
     recipe = Recipe.query.filter_by(id=recipe_uuid).first()
     if not recipe:
         raise NotFoundError(f"Recipe with ID: {recipe_id} not found")
-
     ingredients_list = []
     recipe_ingredients = RecipeIngredient.query.filter_by(recipe_id=recipe_uuid).all()
     for recipe_ingredient in recipe_ingredients:
@@ -51,15 +48,12 @@ def update_recipe_by_id(recipe_id, data):
         recipe_uuid = uuid.UUID(recipe_id)
     except ValueError:
         raise InvalidUUIDError("ID must be in uuid format")
-
     recipe = Recipe.query.filter_by(id=recipe_uuid).first()
     if not recipe:
         raise NotFoundError(f"Recipe with ID: {recipe_id} not found")
-
     for key, value in data.items():
         if hasattr(recipe, key):
             setattr(recipe, key, value)
-
     db.session.commit()
     return recipe.to_dict()
 
@@ -69,7 +63,6 @@ def delete_recipe_by_id(recipe_id):
         recipe_uuid = uuid.UUID(recipe_id)
     except ValueError:
         raise InvalidUUIDError("ID must be in uuid format")
-
     deleted = Recipe.query.filter_by(id=recipe_uuid).delete()
     db.session.commit()
     if deleted > 0:
@@ -81,13 +74,11 @@ def delete_recipe_by_id(recipe_id):
 def create_recipe(data):
     if not data:
         raise EmptyBodyError("No json data provided")
-
     try:
         name = data.get("name")
         description = data.get("description")
     except:
         raise JsonParseError("Exception when deserializing data")
-
     try:
         new_recipe = Recipe(name, description)
         db.session.add(new_recipe)

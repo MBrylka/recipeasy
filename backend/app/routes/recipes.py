@@ -12,7 +12,7 @@ recipes_blueprint = Blueprint("recipes", __name__)
 @recipes_blueprint.route("/")
 def get_recipes():
     recipes = get_all_recipes()
-    return {"recipes": [recipe.to_dict() for recipe in recipes]}
+    return {"recipes": recipes}, 200
 
 
 @recipes_blueprint.route("/<string:recipe_id>")
