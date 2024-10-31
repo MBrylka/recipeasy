@@ -1,10 +1,9 @@
 import uuid
-from flask import Blueprint, jsonify
+from flask import Blueprint
 from flask import request
 from ..exceptions import DatabaseError, EmptyBodyError, InvalidUUIDError, JsonParseError, NotFoundError
 from ..services.recipes_service import create_recipe, delete_recipe_by_id, get_all_recipes, get_recipe_by_id, get_recipe_ingredients_by_recipe_id, update_recipe_by_id
-from ..models import Recipe, RecipeIngredient, Ingredient
-from ..extensions import db
+
 
 recipes_blueprint = Blueprint("recipes", __name__)
 

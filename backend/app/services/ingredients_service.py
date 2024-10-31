@@ -53,11 +53,15 @@ def create_ingredient(data):
         raise EmptyBodyError("No json data provided")
     try:
         name = data.get("name")
+        calories = data.get("calories")
+        carbs = data.get("carbs")
+        protein = data.get("protein")
+        fat = data.get("fat")
     except:
         raise JsonParseError("Exception when deserializing data")
 
     try:
-        new_ingredient = Ingredient(name)
+        new_ingredient = Ingredient(name, calories, carbs, protein, fat)
         db.session.add(new_ingredient)
         db.session.commit()
     except:
