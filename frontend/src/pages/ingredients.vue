@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <p> Dashboard </p>
+    <p> Ingredients page </p>
   </v-container>
 </template>
 
