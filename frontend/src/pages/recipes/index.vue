@@ -1,22 +1,20 @@
 <template>
   <v-container>
     <h1> Recipes page </h1>
-
+    <v-divider class="border-opacity-100"></v-divider>
     <v-row justify="center" v-if="isRecipesLoading">
       <v-progress-circular color="primary" indeterminate :size="64" :width="8"></v-progress-circular>
     </v-row>
 
-    <v-alert v-else-if="error" color="error" colored-border>
+    <v-alert v-else-if="error" color="error" colored-border closable>
       Error: {{ error }}
     </v-alert>
 
-
     <v-row v-else>
-      <v-col v-for="recipe in recipes.recipes" :key="recipe.id" cols="12" sm="6" md="4">
+      <v-col v-for="recipe in recipes.recipes" :key="recipe.id" cols="12" sm="6" md="4" lg="3" xl="2">
         <RecipeCard :recipe="recipe" />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -35,7 +33,7 @@ onMounted(async () => {
   try {
     isRecipesLoading.value = true;
     recipes.value = await fetchRecipes();
-  } catch (err:any) {
+  } catch (err: any) {
     error.value = err
   } finally {
     isRecipesLoading.value = false;

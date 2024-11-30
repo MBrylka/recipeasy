@@ -6,7 +6,6 @@
 
 // Plugins
 import { registerPlugins } from '@/plugins'
-
 // Components
 import App from './App.vue'
 
@@ -22,3 +21,4 @@ registerPlugins(app)
 app.use(pinia)
 
 app.mount('#app')
+

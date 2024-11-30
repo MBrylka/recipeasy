@@ -11,6 +11,7 @@ class Ingredient(db.Model, SerializerMixin):
     makro_carbs = db.Column(db.Float, default=0.0)
     makro_protein = db.Column(db.Float, default=0.0)
     makro_fat = db.Column(db.Float, default=0.0)
+    
 
     def __init__(self, name, calories, carbs, protein, fat) -> None:
         self.name = name
