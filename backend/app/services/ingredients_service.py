@@ -57,11 +57,14 @@ def create_ingredient(data):
         carbs = data.get("carbs")
         protein = data.get("protein")
         fat = data.get("fat")
+        base_unit = data.get("base_unit")
+        density = data.get("denstity")
+        weight_per_piece = data.get("weight_per_piece")
     except:
         raise JsonParseError("Exception when deserializing data")
 
     try:
-        new_ingredient = Ingredient(name, calories, carbs, protein, fat)
+        new_ingredient = Ingredient(name, calories, carbs, protein, fat, base_unit, density, weight_per_piece)
         db.session.add(new_ingredient)
         db.session.commit()
     except:
