@@ -5,4 +5,5 @@ export interface Ingredient {
     makro_fat: number;
     makro_protein: number;
     name: string;
+    base_unit: string;
 }
