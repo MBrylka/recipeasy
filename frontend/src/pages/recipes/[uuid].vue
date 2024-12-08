@@ -55,7 +55,7 @@
             <v-col cols="12" md="4">
                 <v-card>
                     <v-card-title>
-                        <h2>Nutrition per 100g</h2>
+                        <h2>Nutrition</h2>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-list>
@@ -81,10 +81,21 @@ import { Recipe, RecipeIngredientsList } from '@/types/api/recipes';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router/auto';
 
+interface IngredientTableData {
+            name: String;
+            quantity: number;
+            base_unit: String;
+            calories: number;
+            carbs: number;
+            fat: number;
+            protein: number;
+}
+
 const currentRoute = useRoute();
 const recipeId = currentRoute.params.id as string;
 const tableHeaders = [
     { title: "Quantity", key: "quantity" },
+    { title: "Unit", key: "base_unit" },
     { title: "Name", key: "name" },
     { title: "Calories", key: "calories" },
     { title: "Carbs", key: "carbs" },
@@ -97,33 +108,46 @@ const error = ref(null);
 const recipe = ref<Recipe>();
 const tableSelected = ref([]);
 const recipeIngredients = ref<RecipeIngredientsList>();
-const ingredientsTableData = ref<any>([]);
+const ingredientsTableData = ref<IngredientTableData[]>();
 const recipeSteps = [
     "Preheat the oven to 180°C (350°F).",
     "Mix ingredient A with ingredient B.",
     "Add ingredient C and stir thoroughly.",
     "Bake for 25-30 minutes, or until golden brown."
 ];
-const nutrition = [
+
+const nutrition = ref([
     { name: "kcal", value: "200" },
     { name: "Carb", value: "30g" },
     { name: "Protein", value: "15g" },
     { name: "Fat", value: "10g" }
-];
+]);
+
+const calculateNutrition = () => {
+    recipeIngredients.value.forEach(recipeIngredient => {
+        
+    });
+}
 
 onMounted(async () => {
     try {
         isRecipeLoading.value = true;
         recipe.value = await fetchSingleRecipe(recipeId);
         recipeIngredients.value = await fetchRecipeIngredients(recipeId);
+        if (!recipeIngredients.value) 
+            throw new Error("Service returned undefined value");
         ingredientsTableData.value = recipeIngredients.value.map((recipeIngredient) => ({
             name: recipeIngredient.ingredient.name,
             quantity: recipeIngredient.recipeIngredient.quantity,
+            base_unit: recipeIngredient.ingredient.base_unit,
             calories: recipeIngredient.ingredient.makro_calories,
             carbs: recipeIngredient.ingredient.makro_carbs,
             fat: recipeIngredient.ingredient.makro_fat,
             protein: recipeIngredient.ingredient.makro_protein,
         }));
+        calculateNutrition();
+
+
     } catch (err: any) {
         error.value = err
     } finally {

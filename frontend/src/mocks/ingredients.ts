@@ -7,5 +7,8 @@ export const createMockIngredient = (): Ingredient => ({
     makro_carbs: 10.0,
     makro_fat: 10.0,
     makro_protein: 10.0,
-    name: faker.food.ingredient()
+    name: faker.food.ingredient(),
+    weight_per_piece: null,
+    base_unit: "g",
+    density: null
 });

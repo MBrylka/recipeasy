@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar scroll-behavior="fade-image" image="https://picsum.photos/1920/1080?random" height="100">
+    <v-app-bar scroll-behavior="fade-image" image="@/assets/banner.webp" height="100">
         <v-app-bar-nav-icon color="secondary" @click.stop="toggleNavigation()"></v-app-bar-nav-icon>
         <v-app-bar-title>Recipeasy</v-app-bar-title>
         <v-app-bar-title>{{ currentRoute.path }}</v-app-bar-title>

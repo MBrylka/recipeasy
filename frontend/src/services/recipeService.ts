@@ -1,7 +1,7 @@
 import { createMockRecipes, createMockSingleRecipe, createMockRecipeIngredients} from "@/mocks/recipes";
 import { delay } from "@/mocks/utils";
 
-const API_BASE_URL = '/api'; // Replace with your API base URL
+const API_BASE_URL = '/api';
 
 const delayTime = 1000;
 
