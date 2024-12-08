@@ -1,8 +1,7 @@
 <template>
-    <v-app-bar scroll-behavior="fade-image" image="@/assets/banner.webp" height="100">
-        <v-app-bar-nav-icon color="secondary" @click.stop="toggleNavigation()"></v-app-bar-nav-icon>
-        <v-app-bar-title>Recipeasy</v-app-bar-title>
-        <v-app-bar-title>{{ currentRoute.path }}</v-app-bar-title>
+    <v-app-bar scroll-behavior="fade-image" image="@/assets/banner2.webp" height="100">
+        <v-app-bar-nav-icon color="primary" @click.stop="toggleNavigation()"></v-app-bar-nav-icon>
+        <v-app-bar-title class="text-primary font-weight-black text-h5">Recipeasy</v-app-bar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" temporary>
         <v-list>
@@ -22,7 +21,6 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-const currentRoute = useRoute();
 const drawer = ref(false);
 const navItems = [
     { title: 'Dashboard', link: '/' },

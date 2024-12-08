@@ -11,6 +11,12 @@
                     <v-card>
                         <v-card-title>
                             <h2>{{ recipe?.name }}</h2>
+                            <v-chip color="secondary">
+                                Breakfast
+                            </v-chip>
+                            <v-chip color="secondary">
+                                Lunch
+                            </v-chip>
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
@@ -82,13 +88,13 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router/auto';
 
 interface IngredientTableData {
-            name: String;
-            quantity: number;
-            base_unit: String;
-            calories: number;
-            carbs: number;
-            fat: number;
-            protein: number;
+    name: String;
+    quantity: number;
+    base_unit: String;
+    calories: number;
+    carbs: number;
+    fat: number;
+    protein: number;
 }
 
 const currentRoute = useRoute();
@@ -117,15 +123,28 @@ const recipeSteps = [
 ];
 
 const nutrition = ref([
-    { name: "kcal", value: "200" },
-    { name: "Carb", value: "30g" },
-    { name: "Protein", value: "15g" },
-    { name: "Fat", value: "10g" }
+    { name: "kcal", value: 0 },
+    { name: "Carb", value: 0 },
+    { name: "Protein", value: 0 },
+    { name: "Fat", value: 0 }
 ]);
 
 const calculateNutrition = () => {
+    if (!recipeIngredients.value) throw new Error("recipe ingredients are undefined");
+
     recipeIngredients.value.forEach(recipeIngredient => {
-        
+        if (recipeIngredient.ingredient.base_unit === "pcs") {
+            nutrition.value[0].value += recipeIngredient.ingredient.makro_calories * recipeIngredient.recipeIngredient.quantity;
+            nutrition.value[1].value += recipeIngredient.ingredient.makro_carbs * recipeIngredient.recipeIngredient.quantity;
+            nutrition.value[2].value += recipeIngredient.ingredient.makro_protein * recipeIngredient.recipeIngredient.quantity;
+            nutrition.value[3].value += recipeIngredient.ingredient.makro_fat * recipeIngredient.recipeIngredient.quantity;
+        } else {
+            nutrition.value[0].value += recipeIngredient.ingredient.makro_calories * recipeIngredient.recipeIngredient.quantity / 100.0;
+            nutrition.value[1].value += recipeIngredient.ingredient.makro_carbs * recipeIngredient.recipeIngredient.quantity / 100.0;
+            nutrition.value[2].value += recipeIngredient.ingredient.makro_protein * recipeIngredient.recipeIngredient.quantity / 100.0;
+            nutrition.value[3].value += recipeIngredient.ingredient.makro_fat * recipeIngredient.recipeIngredient.quantity / 100.0;
+
+        }
     });
 }
 
@@ -134,7 +153,7 @@ onMounted(async () => {
         isRecipeLoading.value = true;
         recipe.value = await fetchSingleRecipe(recipeId);
         recipeIngredients.value = await fetchRecipeIngredients(recipeId);
-        if (!recipeIngredients.value) 
+        if (!recipeIngredients.value)
             throw new Error("Service returned undefined value");
         ingredientsTableData.value = recipeIngredients.value.map((recipeIngredient) => ({
             name: recipeIngredient.ingredient.name,
