@@ -19,7 +19,6 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
 
 const drawer = ref(false);
 const navItems = [

@@ -98,7 +98,7 @@ interface IngredientTableData {
 }
 
 const currentRoute = useRoute();
-const recipeId = currentRoute.params.id as string;
+const recipeId = currentRoute.params.uuid as string;
 const tableHeaders = [
     { title: "Quantity", key: "quantity" },
     { title: "Unit", key: "base_unit" },
